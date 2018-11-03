@@ -82,7 +82,7 @@ git clone  https://github.com/felix-centenera/OKD3.9_CentOS7.5.git
 Generate VirtualBox Machines with Vagrant
 -----------------------------------------
 ```
-cd vagrant
+cd OKD3.9_CentOS7.5/vagrant/
 
 vagrant up
 ```
