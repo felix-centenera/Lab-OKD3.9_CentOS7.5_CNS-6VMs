@@ -50,6 +50,10 @@ Infrastructure
 
 CNS (Container Native Storage) as Storage solution.
 
+
+![alt text](https://github.com/felix-centenera/OKD3.9_CentOS7.5/blob/master/img/Infraestruture.png)
+
+
 Details
 --------
 User Virtual Machine:
@@ -73,7 +77,7 @@ password: r3dh4t1!
 Download the project
 -----------------------------------------
 ```
-git clone  https://gitlab.vass.es/vass/ocp-vagrant.git
+git clone  https://github.com/felix-centenera/OKD3.9_CentOS7.5.git
 ```
 Generate VirtualBox Machines with Vagrant
 -----------------------------------------
