@@ -1,0 +1,43 @@
+---
+- name: Add repository
+  yum_repository:
+    name: CentOS OpenShift Origin
+    description: CentOS OpenShift Origin
+    baseurl: http://mirror.centos.org/centos/7/paas/x86_64/openshift-origin/
+    gpgcheck: no
+    enabled: yes
+
+- name: Ensure required packages are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ yum_packages }}"
+
+- name: remove any existing docker-storage config file
+  file:
+    path: /etc/sysconfig/docker-storage-setup
+    state: absent
+
+- name: Enable insecure docker registry
+  shell: sed -i "s|OPTIONS=.*|OPTIONS='--selinux-enabled --insecure-registry 172.30.0.0/16'|g" /etc/sysconfig/docker
+
+- name: Configure Docker’s storage files & driver
+  template:
+    src: docker-storage-setup.j2
+    dest: /etc/sysconfig/docker-storage-setup
+
+- name: docker-storage-setup
+  shell: docker-storage-setup
+
+- name: start docker
+  service: name=docker state=restarted enabled=true
+
+- name: enable docker service
+  service: name=docker enabled=true state=started
+
+- name: Ensure SELinux is in enforcing mode
+  lineinfile:
+    dest: /etc/selinux/config
+    backup: yes
+    regexp: '^SELINUX='
+    line: 'SELINUX=enforcing'

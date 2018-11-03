@@ -1,0 +1,138 @@
+# Create an OSEv3 group that contains the master, nodes and etcd.
+[OSEv3:children]
+masters
+nodes
+etcd
+lb
+glusterfs
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+ansible_ssh_user=root
+openshift_deployment_type=origin
+openshift_release=v3.9
+openshift_disable_check=memory_availability,disk_availability,docker_storage,package_version,docker_image_availability,package_availability
+os_sdn_network_plugin_name='redhat/openshift-ovs-multitenant'
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
+#ansible_service_broker_install=false
+
+
+# Defining htpasswd users
+# admin:r3dh4t1!
+openshift_master_htpasswd_users={'admin': '$apr1$JsF6SZqF$V6M9k2wAfhQIi5n7WCzEQ.'}
+
+
+os_firewall_use_firewalld=True
+
+# Native high availability (default cluster method)
+# If no lb group is defined, the installer assumes that a load balancer has
+# been preconfigured. For installation the value of
+# openshift_master_cluster_hostname must resolve to the load balancer
+# or to one or all of the masters defined in the inventory if no load
+# balancer is present.
+openshift_master_cluster_method=native
+openshift_master_cluster_hostname=lb-one.192.168.33.7.xip.io
+openshift_master_cluster_public_hostname=console-ocp.192.168.33.7.xip.io
+
+
+# default subdomain to use for exposed routes, you should have wildcard dns
+# for *.apps.test.example.com that points at your infra nodes which will run
+# your router
+openshift_master_default_subdomain=apps.openshift.192.168.33.5.xip.io
+
+
+# apply updated node defaults
+openshift_node_kubelet_args={'pods-per-core': ['10'], 'max-pods': ['250'], 'image-gc-high-threshold': ['90'], 'image-gc-low-threshold': ['80']}
+
+# enable ntp on masters to ensure proper failover
+openshift_clock_enabled=true
+
+# default project node selector
+osm_default_node_selector='role=apps'
+
+# Hosted infra selector
+openshift_hosted_infra_selector='role=infra'
+
+# Router selector (optional)
+# Router will only be created if nodes matching this label are present.
+openshift_router_selector='role=infra'
+
+# Registry selector (optional)
+# Registry will only be created if nodes matching this label are present.
+openshift_registry_selector='role=infra'
+
+# Template Service Broker selector
+template_service_broker_selector={"role":"infra"}
+
+
+# Configure node kubelet arguments.
+openshift_node_kubelet_args={'pods-per-core': ['10'], 'max-pods': ['250'], 'image-gc-high-threshold': ['85'], 'image-gc-low-threshold': ['80']}
+
+# Configure usage of openshift_clock role.
+openshift_clock_enabled=true
+
+# host group for masters
+[masters:children]
+role_master
+
+# host group for etcd
+[etcd:children]
+role_master
+
+# host group for nodes, includes region info
+[nodes:children]
+role_master
+role_infra
+role_apps
+glusterfs
+
+[role_master]
+master-one.192.168.33.2.xip.io openshift_ip=192.168.33.2 openshift_public_ip=192.168.33.2 openshift_hostname=master-one.192.168.33.2.xip.io openshift_public_hostname=master-one.192.168.33.2.xip.io
+master-two.192.168.33.3.xip.io openshift_ip=192.168.33.3 openshift_public_ip=192.168.33.3 openshift_hostname=master-two.192.168.33.3.xip.io openshift_public_hostname=master-two.192.168.33.3.xip.io
+master-three.192.168.33.4.xip.io openshift_ip=192.168.33.4 openshift_public_ip=192.168.33.4 openshift_hostname=master-three.192.168.33.4.xip.io openshift_public_hostname=master-three.192.168.33.4.xip.io
+
+[role_master:vars]
+openshift_node_labels="{'role': 'master', 'logging': 'true'}"
+yum_packages_master=['httpd-tools']
+
+[role_infra]
+infra.192.168.33.5.xip.io openshift_ip=192.168.33.5 openshift_public_ip=192.168.33.5 openshift_hostname=infra.192.168.33.5.xip.io openshift_public_hostname=infra.192.168.33.5.xip.io
+
+
+[role_infra:vars]
+openshift_node_labels="{'role': 'infra', 'logging': 'true'}"
+
+[role_apps]
+app-one.192.168.33.6.xip.io openshift_ip=192.168.33.6 openshift_public_ip=192.168.33.6 openshift_hostname=app-one.192.168.33.6.xip.io openshift_public_hostname=app-one.192.168.33.6.xip.io
+
+[role_apps:vars]
+openshift_node_labels="{'role': 'apps', 'logging': 'true'}"
+
+[lb]
+lb-one.192.168.33.7.xip.io openshift_ip=192.168.33.7 openshift_public_ip=192.168.33.7 openshift_hostname=lb-one.192.168.33.7.xip.io openshift_public_hostname=lb-one.192.168.33.7.xip.io
+
+
+# host group for glusterfs
+[glusterfs]
+master-three.192.168.33.4.xip.io glusterfs_ip=192.168.33.4 glusterfs_devices='[ "/dev/sdc" ]'
+infra.192.168.33.5.xip.io glusterfs_ip=192.168.33.5 glusterfs_devices='[ "/dev/sdc" ]'
+app-one.192.168.33.6.xip.io glusterfs_ip=192.168.33.6 glusterfs_devices='[ "/dev/sdc" ]'
+
+[preparation:children]
+role_master
+role_infra
+role_apps
+
+[preparation:vars]
+ansible_user=root
+#ansible_become=true
+yum_packages=['docker-1.13.1']
+
+[postinstallation:children]
+role_master
+role_infra
+role_apps
+
+[postinstallation:vars]
+ansible_user=root
+yum_packages_post_install=['e2fsprogs']

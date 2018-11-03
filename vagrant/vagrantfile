@@ -1,0 +1,258 @@
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+  config.hostmanager.ignore_private_ip = false
+
+
+
+  config.vm.define "lb-one" do |app|
+      app.vm.box = "centos/7"
+      app.vm.hostname = "lb-one.192.168.33.7.xip.io"
+      app.vm.network "private_network", ip: "192.168.33.7"
+      config.vm.provision "shell", path: "./nodes/config.sh"
+      app.vm.provider "virtualbox" do |v|
+          v.name = "lb-one-vagrant"
+          v.memory = 512
+          v.cpus = 1
+      end
+  end
+
+  config.vm.define "master-two" do |app|
+      app.vm.box = "centos/7"
+      app.vm.hostname = "master-two.192.168.33.3.xip.io"
+      app.vm.network "private_network", ip: "192.168.33.3"
+      app.vm.provider "virtualbox" do |v|
+        v.name = "master-two-vagrant"
+        v.memory = 2000
+        v.cpus = 1
+        #
+         # Add first disk
+        #
+        unless File.exists?("$HOME/VirtualBox/master-two/sdb.vdi")
+        v.customize [
+          'createmedium', 'disk',
+          '--filename', "$HOME/VirtualBox/master-two/sdb.vdi",
+          '--format', 'VDI',
+          '--size', 20 * 1024
+        ]
+        end
+        v.customize [
+       'storageattach', :id,
+       '--storagectl', 'IDE',
+       '--port', 1,
+       '--device', 0,
+       '--type', 'hdd',
+       '--medium', "$HOME/VirtualBox/master-two/sdb.vdi"
+        ]
+      end
+  end
+
+  config.vm.define "master-three" do |app|
+      app.vm.box = "centos/7"
+      app.vm.hostname = "master-three.192.168.33.4.xip.io"
+      app.vm.network "private_network", ip: "192.168.33.4"
+      app.vm.provider "virtualbox" do |v|
+          v.name = "master-three-vagrant"
+          v.memory = 2000
+          v.cpus = 1
+          #
+           # Add first disk
+          #
+          unless File.exists?("$HOME/VirtualBox/master-three/sdb.vdi")
+          v.customize [
+            'createmedium', 'disk',
+            '--filename', "$HOME/VirtualBox/master-three/sdb.vdi",
+            '--format', 'VDI',
+            '--size', 20 * 1024
+          ]
+          end
+          v.customize [
+         'storageattach', :id,
+         '--storagectl', 'IDE',
+         '--port', 1,
+         '--device', 0,
+         '--type', 'hdd',
+         '--medium', "$HOME/VirtualBox/master-three/sdb.vdi"
+          ]
+        #
+        # Increase portcount for second disk
+        #
+        v.customize [
+          'storagectl', :id,
+          '--name', 'IDE',
+          '--portcount', 2
+        ]
+        #
+        # Add second disk
+        #
+        unless File.exists?("$HOME/VirtualBox/master-three/sdc.vdi")
+          v.customize [
+            'createmedium', 'disk',
+            '--filename', "$HOME/VirtualBox/master-three/sdc.vdi",
+            '--format', 'VDI',
+            '--size', 50 * 1024
+          ]
+        end
+        v.customize [
+              'storageattach', :id,
+              '--storagectl', 'IDE',
+              '--port', 1,
+              '--device', 1,
+              '--type', 'hdd',
+              '--medium', "$HOME/VirtualBox/master-three/sdc.vdi"
+            ]
+      end
+  end
+
+  config.vm.define "infra-one" do |app|
+      app.vm.box = "centos/7"
+      app.vm.hostname = "infra.192.168.33.5.xip.io"
+      app.vm.network "private_network", ip: "192.168.33.5"
+      app.vm.provider "virtualbox" do |v|
+          v.name = "infra-one-vagrant"
+          v.memory = 2000
+          v.cpus = 1
+
+          #
+           # Add first disk
+          #
+          unless File.exists?("$HOME/VirtualBox/infra-one/sdb.vdi")
+          v.customize [
+            'createmedium', 'disk',
+            '--filename', "$HOME/VirtualBox/infra-one/sdb.vdi",
+            '--format', 'VDI',
+            '--size', 20 * 1024
+          ]
+          end
+          v.customize [
+         'storageattach', :id,
+         '--storagectl', 'IDE',
+         '--port', 1,
+         '--device', 0,
+         '--type', 'hdd',
+         '--medium', "$HOME/VirtualBox/infra-one/sdb.vdi"
+          ]
+        #
+        # Increase portcount for second disk
+        #
+        v.customize [
+          'storagectl', :id,
+          '--name', 'IDE',
+          '--portcount', 2
+        ]
+        #
+        # Add second disk
+        #
+        unless File.exists?("$HOME/VirtualBox/infra-one/sdc.vdi")
+          v.customize [
+            'createmedium', 'disk',
+            '--filename', "$HOME/VirtualBox/infra-one/sdc.vdi",
+            '--format', 'VDI',
+            '--size', 50 * 1024
+          ]
+        end
+        v.customize [
+              'storageattach', :id,
+              '--storagectl', 'IDE',
+              '--port', 1,
+              '--device', 1,
+              '--type', 'hdd',
+              '--medium', "$HOME/VirtualBox/infra-one/sdc.vdi"
+            ]
+          end
+
+  end
+
+  config.vm.define "app-one" do |app|
+      app.vm.box = "centos/7"
+      app.vm.hostname = "app-one.192.168.33.6.xip.io"
+      app.vm.network "private_network", ip: "192.168.33.6"
+      app.vm.provider "virtualbox" do |v|
+          v.name = "app-one-vagrant"
+          v.memory = 2000
+          v.cpus = 1
+      #
+       # Add first disk
+      #
+      unless File.exists?("$HOME/VirtualBox/app-one/sdb.vdi")
+      v.customize [
+        'createmedium', 'disk',
+        '--filename', "$HOME/VirtualBox/app-one/sdb.vdi",
+        '--format', 'VDI',
+        '--size', 20 * 1024
+      ]
+      end
+      v.customize [
+     'storageattach', :id,
+     '--storagectl', 'IDE',
+     '--port', 1,
+     '--device', 0,
+     '--type', 'hdd',
+     '--medium', "$HOME/VirtualBox/app-one/sdb.vdi"
+      ]
+    #
+    # Increase portcount for second disk
+    #
+    v.customize [
+      'storagectl', :id,
+      '--name', 'IDE',
+      '--portcount', 2
+    ]
+    #
+    # Add second disk
+    #
+    unless File.exists?("$HOME/VirtualBox/app-one/sdc.vdi")
+      v.customize [
+        'createmedium', 'disk',
+        '--filename', "$HOME/VirtualBox/app-one/sdc.vdi",
+        '--format', 'VDI',
+        '--size', 50 * 1024
+      ]
+    end
+    v.customize [
+          'storageattach', :id,
+          '--storagectl', 'IDE',
+          '--port', 1,
+          '--device', 1,
+          '--type', 'hdd',
+          '--medium', "$HOME/VirtualBox/app-one/sdc.vdi"
+        ]
+      end
+  end
+
+  config.vm.define "master-one" do |app|
+      app.vm.box = "centos/7"
+      app.vm.hostname = "master-one.192.168.33.2.xip.io"
+      app.vm.network "private_network", ip: "192.168.33.2"
+      config.vm.provision "file", source: "./password/password.txt", destination: "/tmp/password.txt"
+      config.vm.provision "file", source: "./ansible_conf/ansible.cfg", destination: "/tmp/ansible.cfg"
+      config.vm.provision "file", source: "../ansible", destination: "/tmp/"
+      config.vm.provision "shell", path: "./bastion/configbastion.sh"
+      app.vm.provider "virtualbox" do |v|
+        v.name = "master-one-vagrant"
+        v.memory = 2000
+        v.cpus = 1
+      #
+       # Add first disk
+      #
+      unless File.exists?("$HOME/VirtualBox/master-one/sdb.vdi")
+      v.customize [
+        'createmedium', 'disk',
+        '--filename', "$HOME/VirtualBox/master-one/sdb.vdi",
+        '--format', 'VDI',
+        '--size', 20 * 1024
+      ]
+      end
+      v.customize [
+     'storageattach', :id,
+     '--storagectl', 'IDE',
+     '--port', 1,
+     '--device', 0,
+     '--type', 'hdd',
+     '--medium', "$HOME/VirtualBox/master-one/sdb.vdi"
+      ]
+      end
+  end
+end
