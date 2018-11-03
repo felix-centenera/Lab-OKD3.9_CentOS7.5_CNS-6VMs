@@ -58,19 +58,19 @@ Details
 --------
 User Virtual Machine:
 
-  user: root
+    user: root
 
-  password: vagrant
+    password: vagrant
 
-  user: vagrant
+    user: vagrant
 
-  password: vagrant
+    password: vagrant
 
 Openshift admin user:
 
-  user: admin
+    user: admin
 
-  password: r3dh4t1!
+    password: r3dh4t1!
 
 
 Download the project
