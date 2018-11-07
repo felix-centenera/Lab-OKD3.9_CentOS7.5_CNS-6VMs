@@ -26,7 +26,6 @@
   command: sh /backup_etcd/backupscript_etcd/backup_etcd_conf.sh
 
 - name: Check status ETCD
-  #shell: source /etc/etcd/etcd.conf && export ETCDCTL_API=3 && ETCD_ALL_ENDPOINTS=` etcdctl  --cert=$ETCD_PEER_CERT_FILE --key=$ETCD_PEER_KEY_FILE --cacert=$ETCD_TRUSTED_CA_FILE --endpoints=$ETCD_LISTEN_CLIENT_URLS --write-out=fields   member list | awk '/ClientURL/{printf "%s%s",sep,$3; sep=","}'` && etcdctl  --cert=$ETCD_PEER_CERT_FILE --key=$ETCD_PEER_KEY_FILE --cacert=$ETCD_TRUSTED_CA_FILE --endpoints=$ETCD_ALL_ENDPOINTS   member list   status | cut -d "," -f3 | head -1
   shell: source /etc/etcd/etcd.conf && export ETCDCTL_API=3 && ETCD_ALL_ENDPOINTS=` etcdctl  --cert=$ETCD_PEER_CERT_FILE --key=$ETCD_PEER_KEY_FILE --cacert=$ETCD_TRUSTED_CA_FILE --endpoints=$ETCD_LISTEN_CLIENT_URLS --write-out=fields   member list | awk '/ClientURL/{printf "%s%s",sep,$3; sep=","}'` && etcdctl  --cert=$ETCD_PEER_CERT_FILE --key=$ETCD_PEER_KEY_FILE --cacert=$ETCD_TRUSTED_CA_FILE --endpoints=$ETCD_LISTEN_CLIENT_URLS  member list | grep `etcdctl  --cert=$ETCD_PEER_CERT_FILE --key=$ETCD_PEER_KEY_FILE --cacert=$ETCD_TRUSTED_CA_FILE --endpoints=$ETCD_ALL_ENDPOINTS  endpoint status  2>&1 |  grep true | cut -d "," -f2` | cut -d "," -f3
   register: etcdhealthynode
 
@@ -61,7 +60,6 @@
 - name:
   fetch:
     src: /backup_etcd/{{inventory_hostname}}.tgz
-    #dest: /backup_etcd/cluster_etcd_backup/{{ansible_date_time.date}}
     dest: /backup_etcd/cluster_etcd_backup/{{ lookup('pipe','date +%Y-%m-%d-%H:%M') }}
     mode: 0755
 
