@@ -73,16 +73,16 @@ Openshift admin user:
     password: r3dh4t1!
 
 
-Download the project
+Download the project and move forward
 -----------------------------------------
 ```
 git clone  https://github.com/felix-centenera/OKD3.9_CentOS7.5.git
+sh OKD3.9_CentOS7.5/vagrant/vag-plugins.sh
 ```
 Generate VirtualBox Machines with Vagrant
 -----------------------------------------
 ```
 cd OKD3.9_CentOS7.5/vagrant/
-
 vagrant up
 ```
 Login in the bastion
