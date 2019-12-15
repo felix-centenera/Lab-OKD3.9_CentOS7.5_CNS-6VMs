@@ -7,23 +7,24 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 
 
-  config.vm.define "lb-one" do |app|
-      app.vm.box = "centos/7"
-      app.vm.hostname = "lb-one.192.168.33.7.xip.io"
-      app.vm.network "private_network", ip: "192.168.33.7"
-      config.vm.provision "shell", path: "./nodes/config.sh"
-      app.vm.provider "virtualbox" do |v|
+  config.vm.define "lbone" do |lbone|
+      lbone.vm.box = "centos/7"
+      lbone.vm.hostname = "lb-one.192.168.33.7.xip.io"
+      lbone.vm.network "private_network", ip: "192.168.33.7"
+      lbone.vm.provision "shell", path: "./nodes/config.sh"
+      lbone.vm.provider "virtualbox" do |v|
           v.name = "lb-one-vagrant"
           v.memory = 512
           v.cpus = 1
       end
   end
 
-  config.vm.define "master-two" do |app|
-      app.vm.box = "centos/7"
-      app.vm.hostname = "master-two.192.168.33.3.xip.io"
-      app.vm.network "private_network", ip: "192.168.33.3"
-      app.vm.provider "virtualbox" do |v|
+  config.vm.define "mastertwo" do |mastertwo|
+      mastertwo.vm.box = "centos/7"
+      mastertwo.vm.hostname = "master-two.192.168.33.3.xip.io"
+      mastertwo.vm.network "private_network", ip: "192.168.33.3"
+      mastertwo.vm.provision "shell", path: "./nodes/config.sh"
+      mastertwo.vm.provider "virtualbox" do |v|
         v.name = "master-two-vagrant"
         v.memory = 2000
         v.cpus = 1
@@ -49,11 +50,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
   end
 
-  config.vm.define "master-three" do |app|
-      app.vm.box = "centos/7"
-      app.vm.hostname = "master-three.192.168.33.4.xip.io"
-      app.vm.network "private_network", ip: "192.168.33.4"
-      app.vm.provider "virtualbox" do |v|
+  config.vm.define "masterthree" do |masterthree|
+      masterthree.vm.box = "centos/7"
+      masterthree.vm.hostname = "master-three.192.168.33.4.xip.io"
+      masterthree.vm.network "private_network", ip: "192.168.33.4"
+      masterthree.vm.provision "shell", path: "./nodes/config.sh"
+      masterthree.vm.provider "virtualbox" do |v|
           v.name = "master-three-vagrant"
           v.memory = 2000
           v.cpus = 1
@@ -106,11 +108,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
   end
 
-  config.vm.define "infra-one" do |app|
-      app.vm.box = "centos/7"
-      app.vm.hostname = "infra.192.168.33.5.xip.io"
-      app.vm.network "private_network", ip: "192.168.33.5"
-      app.vm.provider "virtualbox" do |v|
+  config.vm.define "infraone" do |infraone|
+      infraone.vm.box = "centos/7"
+      infraone.vm.hostname = "infra.192.168.33.5.xip.io"
+      infraone.vm.network "private_network", ip: "192.168.33.5"
+      infraone.vm.provision "shell", path: "./nodes/config.sh"
+      infraone.vm.provider "virtualbox" do |v|
           v.name = "infra-one-vagrant"
           v.memory = 2000
           v.cpus = 1
@@ -165,11 +168,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   end
 
-  config.vm.define "app-one" do |app|
-      app.vm.box = "centos/7"
-      app.vm.hostname = "app-one.192.168.33.6.xip.io"
-      app.vm.network "private_network", ip: "192.168.33.6"
-      app.vm.provider "virtualbox" do |v|
+  config.vm.define "appone" do |appone|
+      appone.vm.box = "centos/7"
+      appone.vm.hostname = "app-one.192.168.33.6.xip.io"
+      appone.vm.network "private_network", ip: "192.168.33.6"
+      appone.vm.provision "shell", path: "./nodes/config.sh"
+      appone.vm.provider "virtualbox" do |v|
           v.name = "app-one-vagrant"
           v.memory = 2000
           v.cpus = 1
@@ -222,15 +226,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
   end
 
-  config.vm.define "master-one" do |app|
-      app.vm.box = "centos/7"
-      app.vm.hostname = "master-one.192.168.33.2.xip.io"
-      app.vm.network "private_network", ip: "192.168.33.2"
-      config.vm.provision "file", source: "./password/password.txt", destination: "/tmp/password.txt"
-      config.vm.provision "file", source: "./ansible_conf/ansible.cfg", destination: "/tmp/ansible.cfg"
-      config.vm.provision "file", source: "../ansible", destination: "/tmp/"
-      config.vm.provision "shell", path: "./bastion/configbastion.sh"
-      app.vm.provider "virtualbox" do |v|
+  config.vm.define "masterone" do |masterone|
+      masterone.vm.box = "centos/7"
+      masterone.vm.hostname = "master-one.192.168.33.2.xip.io"
+      masterone.vm.network "private_network", ip: "192.168.33.2"
+      masterone.vm.provision "file", source: "./password/password.txt", destination: "/tmp/password.txt"
+      masterone.vm.provision "file", source: "./ansible_conf/ansible.cfg", destination: "/tmp/ansible.cfg"
+      masterone.vm.provision "file", source: "../ansible", destination: "/tmp/"
+      masterone.vm.provision "shell", path: "./bastion/configbastion.sh"
+      masterone.vm.provider "virtualbox" do |v|
         v.name = "master-one-vagrant"
         v.memory = 2000
         v.cpus = 1

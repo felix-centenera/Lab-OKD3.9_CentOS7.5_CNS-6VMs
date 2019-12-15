@@ -6,7 +6,7 @@ Description
 This document describe the process to install OKD 3.9 (Free OpenShift 3.9) in VirtualBox. Vagrant generate the VMs and resources for us. Ansible will install requistes and OKD 3.9 for us.
 
 
-Requirements
+Tested A
 --------------------------------
 VirtualBox 5.2.18
 
@@ -14,17 +14,26 @@ Vagrant version: Installed Version: 2.0.4
 
     Vagrant  plugins:
 
-        vagrant-disksize (0.1.2)
-
         vagrant-hostmanager (1.8.9)
-
-        vagrant-persistent-storage (0.0.42)
-
-        vagrant-share (1.1.9)
 
     Vagrant box list:
 
         centos/7  (virtualbox, 1809.01)
+
+Tested  B
+-------------------------------
+VirtualBox 6.1 (15 Dec 2019: Last Virtual Box Version is not already ready for Vagrant, 5 min to fixed, follow the steps from this URL: https://github.com/oracle/vagrant-boxes/issues/178)
+
+Vagrant version: Installed Version: 2.2.6
+
+    Vagrant  plugins:
+
+      vagrant-hostmanager (1.8.9, global)
+
+        Vagrant box list:
+
+        centos/7 (virtualbox, 1905.1)
+        
 
 Infrastructure
 --------------------------------
@@ -88,7 +97,7 @@ vagrant up
 Login in the bastion
 -----------------------------------------
 ```
-vagrant ssh master-one
+vagrant ssh masterone
 ```
 Prepare the bastion node
 -----------------------------------------
@@ -138,3 +147,25 @@ https://console-ocp.192.168.33.7.xip.io:8443/console/project/
 user: admin
 
 password: r3dh4t1!
+
+
+Ansible-service-broker
+-----------------------------------------
+
+Ansible-service-broker could not be deployed properly due that it tries to create a PV (Persistent Volume) without any Storage Class Defined.  https://github.com/openshift/openshift-ansible/issues/6377
+
+a) oc project openshift-ansible-service-broker
+
+b) oc delete pvc etcd
+
+c) Login in the console: https://console-ocp.192.168.33.7.xip.io:8443/console/project/
+
+d) Create a new pvc. Name: etcd. GiB: 1. Modes: RWO (Read-Write-Once)
+
+![alt text](https://github.com/felix-centenera/OKD3.9_CentOS7.5/blob/master/img/createnewpvc.png)
+
+e) Deploy asb-etcd and asb
+
+f) Check that the new Pods for asb and asb-etcd are working properly.
+
+![alt text](https://github.com/felix-centenera/OKD3.9_CentOS7.5/blob/master/img/checkpods.png)
