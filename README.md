@@ -8,6 +8,9 @@ This document describe the process to install OKD 3.9 (Free OpenShift 3.9) in Vi
 
 Tested A
 --------------------------------
+
+OS: Fedora & Ubuntu
+
 VirtualBox 5.2.18
 
 Vagrant version: Installed Version: 2.0.4
@@ -22,6 +25,9 @@ Vagrant version: Installed Version: 2.0.4
 
 Tested  B
 -------------------------------
+
+OS: Fedora & Ubuntu
+
 VirtualBox 6.1 (15 Dec 2019: Last Virtual Box Version is not already ready for Vagrant, 5 min to fixed, follow the steps from this URL: https://github.com/oracle/vagrant-boxes/issues/178)
 
 Vagrant version: Installed Version: 2.2.6
@@ -33,7 +39,7 @@ Vagrant version: Installed Version: 2.2.6
         Vagrant box list:
 
         centos/7 (virtualbox, 1905.1)
-        
+
 
 Infrastructure
 --------------------------------
@@ -80,6 +86,17 @@ Openshift admin user:
     user: admin
 
     password: r3dh4t1!
+
+
+Software requisites to stat the project
+-----------------------------------------
+a) Git.
+
+b) VirtualBox
+
+c) Vagrant
+
+d) Install Vagrant plugin: vagrant plugin install vagrant-hostmanager
 
 
 Download the project
