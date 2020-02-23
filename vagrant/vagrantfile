@@ -13,6 +13,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       lbone.vm.network "private_network", ip: "192.168.33.7"
       lbone.vm.provision "shell", path: "./nodes/config.sh"
       lbone.vm.provider "virtualbox" do |v|
+          v.customize [
+            'modifyvm', :id,
+            '--groups', '/okd39/lb'
+          ]
           v.name = "lb-one-vagrant"
           v.memory = 512
           v.cpus = 1
@@ -25,6 +29,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       mastertwo.vm.network "private_network", ip: "192.168.33.3"
       mastertwo.vm.provision "shell", path: "./nodes/config.sh"
       mastertwo.vm.provider "virtualbox" do |v|
+        v.customize [
+          'modifyvm', :id,
+          '--groups', '/okd39/master'
+        ]
         v.name = "master-two-vagrant"
         v.memory = 2000
         v.cpus = 1
@@ -56,6 +64,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       masterthree.vm.network "private_network", ip: "192.168.33.4"
       masterthree.vm.provision "shell", path: "./nodes/config.sh"
       masterthree.vm.provider "virtualbox" do |v|
+          v.customize [
+            'modifyvm', :id,
+            '--groups', '/okd39/master'
+          ]
           v.name = "master-three-vagrant"
           v.memory = 2000
           v.cpus = 1
@@ -114,6 +126,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       infraone.vm.network "private_network", ip: "192.168.33.5"
       infraone.vm.provision "shell", path: "./nodes/config.sh"
       infraone.vm.provider "virtualbox" do |v|
+          v.customize [
+            'modifyvm', :id,
+            '--groups', '/okd39/infra'
+          ]
           v.name = "infra-one-vagrant"
           v.memory = 2000
           v.cpus = 1
@@ -174,6 +190,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       appone.vm.network "private_network", ip: "192.168.33.6"
       appone.vm.provision "shell", path: "./nodes/config.sh"
       appone.vm.provider "virtualbox" do |v|
+          v.customize [
+            'modifyvm', :id,
+            '--groups', '/okd39/app'
+          ]
           v.name = "app-one-vagrant"
           v.memory = 2000
           v.cpus = 1
@@ -235,6 +255,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       masterone.vm.provision "file", source: "../ansible", destination: "/tmp/"
       masterone.vm.provision "shell", path: "./bastion/configbastion.sh"
       masterone.vm.provider "virtualbox" do |v|
+        v.customize [
+          'modifyvm', :id,
+          '--groups', '/okd39/master'
+        ]
         v.name = "master-one-vagrant"
         v.memory = 2000
         v.cpus = 1
