@@ -126,7 +126,7 @@ role_apps
 [preparation:vars]
 ansible_user=root
 #ansible_become=true
-yum_packages=['docker-1.13.1','glusterfs-fuse']
+yum_packages=['docker-1.13.1']
 
 [postinstallation:children]
 role_master
