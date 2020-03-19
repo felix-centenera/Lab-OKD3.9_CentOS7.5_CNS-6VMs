@@ -40,6 +40,19 @@ Vagrant version: Installed Version: 2.2.6
 
         centos/7 (virtualbox, 1905.1)
 
+Tested  C
+-------------------------------
+OS: Ubuntu 18.04
+
+Virtaul box Version 6.1.0 r135406 (Qt5.9.5)
+
+Vagrant version: Installed Version: 2.2.7
+
+  Vagrant  plugins:
+
+        vagrant plugin: vagrant-hostmanager (1.8.9, global)
+
+        vagrant box: centos/7 (virtualbox, 1809.01)
 
 Infrastructure
 --------------------------------
