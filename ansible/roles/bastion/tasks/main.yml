@@ -18,7 +18,7 @@
 
 - name: DownLoad OKD 3.9 playbooks from https://github.com/openshift/openshift-ansible
   git:
-    repo: 'https://github.com/openshift/openshift-ansible'
+    repo: 'https://github.com/felix-centenera/openshift-ansible.git'
     dest: release-3.9
     version: release-3.9
     clone: yes
