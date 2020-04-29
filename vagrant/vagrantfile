@@ -4,6 +4,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
   config.hostmanager.ignore_private_ip = false
+  config.vm.synced_folder '.', '/vagrant', disabled: true
 
 
 
@@ -131,8 +132,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             '--groups', '/okd39/infra'
           ]
           v.name = "infra-one-vagrant"
-          v.memory = 2000
-          v.cpus = 1
+          v.memory = 4000
+          v.cpus = 4
 
           #
            # Add first disk
@@ -195,7 +196,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             '--groups', '/okd39/app'
           ]
           v.name = "app-one-vagrant"
-          v.memory = 2000
+          v.memory = 3000
           v.cpus = 1
       #
        # Add first disk
